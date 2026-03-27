@@ -1,6 +1,7 @@
 package server
 
 import (
+	"album-app/api/handlers"
 	"album-app/api/routers"
 	"log"
 
@@ -9,6 +10,9 @@ import (
 
 func Run() {
 	router := gin.Default()
+
+	router.Use(handlers.SetContentType())
+	router.NoRoute(handlers.NotFoundError())
 
 	loadEndpoints(router)
 
