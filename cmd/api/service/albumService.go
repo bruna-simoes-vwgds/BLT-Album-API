@@ -1,30 +1,30 @@
 package service
 
 import (
-	"album-app/api/datamodel"
+	"album-app/cmd/api/models"
 	"time"
 )
 
-func GetAlbumById(id string) (datamodel.Album, bool) {
+func GetAlbumById(id string) (models.Album, bool) {
 	// TODO: connection to MongoDB repo to store and load data
 	albums := populateAlbums()
 	return getAlbumById(id, albums)
 }
 
-func getAlbumById(id string, albums []datamodel.Album) (datamodel.Album, bool) {
+func getAlbumById(id string, albums []models.Album) (models.Album, bool) {
 	for i, album := range albums {
 		if album.AlbumID == id {
 			return albums[i], true
 		}
 	}
-	return datamodel.Album{}, false
+	return models.Album{}, false
 }
 
 // this will become obsolete once DB is implemented
-func populateAlbums() []datamodel.Album {
-	var models []datamodel.Album
+func populateAlbums() []models.Album {
+	var modelsList []models.Album
 
-	model1 := datamodel.Album{
+	model1 := models.Album{
 		AlbumID:      "123",
 		AlbumName:    "Steal This Song!",
 		ArtistName:   "System of a Down",
@@ -32,7 +32,7 @@ func populateAlbums() []datamodel.Album {
 		DateAltered:  time.Now(),
 		Songs:        []string{},
 	}
-	model2 := datamodel.Album{
+	model2 := models.Album{
 		AlbumID:      "456",
 		AlbumName:    "Queen",
 		ArtistName:   "Queen",
@@ -41,7 +41,7 @@ func populateAlbums() []datamodel.Album {
 		Songs:        []string{},
 	}
 
-	models = append(models, model1, model2)
+	modelsList = append(modelsList, model1, model2)
 
-	return models
+	return modelsList
 }

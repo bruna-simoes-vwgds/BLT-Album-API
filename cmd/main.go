@@ -1,6 +1,8 @@
 package main
 
-import "album-app/api/server"
+import (
+	"album-app/cmd/api/server"
+)
 
 func main() {
 	server.Run()

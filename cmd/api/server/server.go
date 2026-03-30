@@ -1,9 +1,10 @@
 package server
 
 import (
-	"album-app/api/handlers"
-	"album-app/api/routers"
+	"album-app/cmd/api/handlers"
+	"album-app/cmd/api/routers"
 	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,7 +17,7 @@ func Run() {
 
 	loadEndpoints(router)
 
-	err := router.Run(":8080")
+	err := router.Run(":" + os.Getenv("GO_LISTENING_PORT"))
 	if err != nil {
 		log.Fatal("Error running gin server: ", err)
 		return

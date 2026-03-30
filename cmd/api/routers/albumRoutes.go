@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"album-app/api/handlers"
+	"album-app/cmd/api/handlers"
 
 	"github.com/gin-gonic/gin"
 )

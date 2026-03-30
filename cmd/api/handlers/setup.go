@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"album-app/api/datamodel"
+	"album-app/cmd/api/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -16,6 +16,6 @@ func SetContentType() gin.HandlerFunc {
 
 func NotFoundError() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		ctx.JSON(http.StatusNotFound, datamodel.Error{Message: "Method not found", Code: 404})
+		ctx.JSON(http.StatusNotFound, models.Error{Message: "Method not found", Code: 404})
 	}
 }

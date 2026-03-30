@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"album-app/api/service"
+	"album-app/cmd/api/service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
