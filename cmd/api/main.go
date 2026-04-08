@@ -1,7 +1,7 @@
 package main
 
 import (
-	"album-app/cmd/api/server"
+	"album-app/internal/api/server"
 )
 
 func main() {

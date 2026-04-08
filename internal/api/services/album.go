@@ -1,14 +1,33 @@
-package service
+package services
 
 import (
-	"album-app/cmd/api/models"
+	"album-app/internal/api/models"
+	"album-app/internal/api/repositories"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
-func GetAlbumById(id string) (models.Album, bool) {
-	// TODO: connection to MongoDB repo to store and load data
-	albums := populateAlbums()
-	return getAlbumById(id, albums)
+type AlbumService struct {
+	Repository *repositories.AlbumRepository
+}
+
+func NewAlbumService(repository *repositories.AlbumRepository) *AlbumService {
+	return &AlbumService{Repository: repository}
+}
+
+func (albumService *AlbumService) GetAlbumById(c *gin.Context, id string) (models.Album, bool) {
+
+	album, err := albumService.Repository.FindAlbumById(c, id)
+	if err != nil {
+		return models.Album{}, false
+	}
+
+	if album == nil {
+		return models.Album{}, false
+	}
+
+	return *album, true
 }
 
 func getAlbumById(id string, albums []models.Album) (models.Album, bool) {

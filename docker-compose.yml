@@ -2,9 +2,6 @@ services:
   mongodb:
     image: mongo:latest
     hostname: mongodb
-    environment:
-      - MONGODB_INITDB_ROOT_USERNAME=${DB_USERNAME}
-      - MONGODB_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
     ports:
       - 27017:27017
     volumes:
