@@ -1,0 +1,56 @@
+[
+  {
+    "_id": {
+      "$oid": "69de25ba77a1a338ce45f8e3"
+    },
+    "AlbumID": "3f869e0c-759e-46e6-b361-b0a6f08da260",
+    "AlbumName": "Thriller",
+    "ArtistName": "Michael Jackson",
+    "DateLaunched": "1982-12-30",
+    "DateAltered": "2000-12-12",
+    "Songs": [
+      "e4752a3f-6c7f-4c60-9b43-50a003854aef",
+      "75a1c79d-ed2b-4665-9734-4d0bafd2f8cd"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69de25ba77a1a338ce45f8e4"
+    },
+    "AlbumID": "d1d135ad-467e-4320-98c8-23361bb82112",
+    "AlbumName": "Metallica",
+    "ArtistName": "Metallica",
+    "DateLaunched": "1991-08-12",
+    "DateAltered": "2005-05-14",
+    "Songs": [
+      "4eb2f85d-e4db-4c2e-8357-eae7edc69e4a"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69de25ba77a1a338ce45f8e5"
+    },
+    "AlbumID": "b2dc784d-9173-435e-b35e-35470e7795af",
+    "AlbumName": "The Eminem Show",
+    "ArtistName": "Eminem",
+    "DateLaunched": "2000-05-23",
+    "DateAltered": "2024-06-02",
+    "Songs": [
+      "dc6cb37d-5ed9-4f09-bccb-bccdfaf2451d"
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "69de25ba77a1a338ce45f8e6"
+    },
+    "AlbumID": "c60ca09c-8287-4ea1-b1ee-8e045ef640ec",
+    "AlbumName": "Lux",
+    "ArtistName": "Rosalía",
+    "DateLaunched": "2022-03-18",
+    "DateAltered": "2026-03-14",
+    "Songs": [
+      "9b3eac27-3f9d-4e9d-947f-7afff2d6bc32",
+      "0f648c29-7275-4e97-be23-621f951f671c"
+    ]
+  }
+]
