@@ -10,9 +10,9 @@ import (
 )
 
 func (DBHandler *Handler) InitializeMongoDB() {
-	val, ok := os.LookupEnv("MONGODB_URI")
+	val, ok := os.LookupEnv("MONGO_URI")
 	if !ok {
-		log.Fatal("MONGODB_URI environment variable not set")
+		log.Fatal("MONGO_URI environment variable not set")
 	}
 
 	client, err := mongo.Connect(options.Client().ApplyURI(val))

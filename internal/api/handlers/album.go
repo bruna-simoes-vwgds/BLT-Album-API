@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"album-app/internal/api/database"
+	"album-app/internal/api/models"
 	"album-app/internal/api/repositories"
 	"album-app/internal/api/services"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,6 +28,6 @@ func (albumHandler *AlbumHandler) GetAlbumById(c *gin.Context) {
 	if foundAlbum {
 		c.JSON(http.StatusOK, album)
 	} else {
-		c.JSON(http.StatusNotFound, gin.H{"message": "album not found"})
+		c.JSON(http.StatusNotFound, models.Error{Message: "Album not found", Timestamp: time.Now().String()})
 	}
 }

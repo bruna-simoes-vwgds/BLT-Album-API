@@ -4,19 +4,44 @@ services:
     hostname: mongodb
     ports:
       - 27017:27017
+    env_file:
+      - .env
     volumes:
       - ./init:/docker-entrypoint-initdb.d
       - db:/data/db
       - configdb:/data/configdb
       - mongot:/data/mongot
+    networks:
+      - blt_backend
+
+  mongo-seed:
+    env_file:
+      - .env
+    build:
+      context: ./init
+      dockerfile: Dockerfile
+      args:
+        - MONGO_URI=${MONGO_URI}
+        - USERNAME=${USERNAME}
+        - PASSWORD=${PASSWORD}
+    depends_on:
+      - mongodb
+    networks:
+      - blt_backend
+
   api:
     env_file:
       - .env
     build: .
     ports:
       - "${GO_EXPOSE_PORT}:${GO_LISTENING_PORT}"
+    networks:
+      - blt_backend
 
 volumes:
   db:
   configdb:
   mongot:
+
+networks:
+    blt_backend:
