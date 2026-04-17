@@ -3,7 +3,7 @@ services:
     image: mongo:latest
     hostname: mongodb
     ports:
-      - 27017:27017
+      - "27017:27017"
     env_file:
       - .env
     volumes:
@@ -22,8 +22,6 @@ services:
       dockerfile: Dockerfile
       args:
         - MONGO_URI=${MONGO_URI}
-        - USERNAME=${USERNAME}
-        - PASSWORD=${PASSWORD}
     depends_on:
       - mongodb
     networks:
