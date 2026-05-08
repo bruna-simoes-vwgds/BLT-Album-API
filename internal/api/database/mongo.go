@@ -9,7 +9,11 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
-func (DBHandler *Handler) InitializeMongoDB() {
+type DBHandler struct {
+	MongoDb *mongo.Database
+}
+
+func (DBHandler *DBHandler) InitializeMongoDB() {
 	val, ok := os.LookupEnv("MONGO_URI")
 	if !ok {
 		log.Fatal("MONGO_URI environment variable not set")
@@ -21,14 +25,14 @@ func (DBHandler *Handler) InitializeMongoDB() {
 		log.Fatal(err)
 	}
 
-	defer func(client *mongo.Client, ctx context.Context) {
-		err := client.Disconnect(ctx)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}(client, context.Background())
-
-	db := client.Database("test_db")
+	db := client.Database("public")
 
 	DBHandler.MongoDb = db
+}
+
+func (DBHandler *DBHandler) DisconnectMongoDB() {
+	err := DBHandler.MongoDb.Client().Disconnect(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
 }

@@ -3,6 +3,7 @@ package repositories
 import (
 	"album-app/internal/api/models"
 
+	"github.com/bytedance/gopkg/util/logger"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -21,16 +22,21 @@ func NewAlbumRepository(db *mongo.Database) *AlbumRepository {
 }
 
 func (repo *AlbumRepository) FindAlbumById(c *gin.Context, id string) (*models.Album, error) {
-	cursor, err := repo.collection.Find(c, bson.M{"id": id})
+	cursor, err := repo.collection.Find(c, bson.M{"album_id": id})
 
 	if err != nil {
+		logger.Error("Error finding album by id: ", err)
 		return nil, err
 	}
 
-	var album models.Album
+	var album []models.Album
 	if err := cursor.All(c, &album); err != nil {
 		return nil, err
 	}
 
-	return &album, nil
+	if len(album) == 0 {
+		return nil, nil
+	}
+
+	return &album[0], nil
 }

@@ -23,6 +23,7 @@ func Run() {
 	router.NoRoute(NotFoundError())
 
 	app := buildApp()
+	defer app.DatabaseHandler.DisconnectMongoDB()
 	loadEndpoints(router, app)
 
 	err := router.Run(":" + os.Getenv("GO_LISTENING_PORT"))
@@ -49,6 +50,7 @@ func loadEndpoints(router *gin.Engine, app *App) {
 	v1 := router.Group("/api/v1")
 	{
 		routes.LoadAlbumRoutes(v1, *app.AlbumHandler)
+		routes.LoadSongRoutes(v1, *app.SongHandler)
 		routes.HealthCheck(v1, handlers.GeneralHandler{})
 	}
 }

@@ -6,16 +6,21 @@ import (
 )
 
 type App struct {
-	AlbumHandler *handlers.AlbumHandler
+	DatabaseHandler *database.DBHandler
+	AlbumHandler    *handlers.AlbumHandler
+	SongHandler     *handlers.SongHandler
 }
 
 func buildApp() *App {
-	dbHandler := database.Handler{}
+	dbHandler := database.DBHandler{}
 	dbHandler.InitializeMongoDB()
 
 	albumHandler := handlers.NewAlbumHandler(&dbHandler)
+	songHandler := handlers.NewSongHandler(&dbHandler)
 
 	return &App{
-		AlbumHandler: albumHandler,
+		DatabaseHandler: &dbHandler,
+		AlbumHandler:    albumHandler,
+		SongHandler:     songHandler,
 	}
 }
