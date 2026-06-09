@@ -23,11 +23,17 @@ func NewSongHandler(db *database.DBHandler) *SongHandler {
 
 func (songHandler *SongHandler) GetSongById(c *gin.Context) {
 	id := c.Param("id")
-	song, foundSong := songHandler.Service.GetSongById(c, id)
+	song, err := songHandler.Service.GetSongById(c, id)
 
-	if foundSong {
-		c.JSON(http.StatusOK, song)
-	} else {
-		c.JSON(http.StatusNotFound, models.Error{Message: "Song not found", Timestamp: time.Now().String()})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.Error{Message: "Error getting song: " + err.Error(), Timestamp: time.Now().String()})
+		return
 	}
+
+	if song == nil {
+		c.JSON(http.StatusNotFound, models.Error{Message: "Song not found", Timestamp: time.Now().String()})
+		return
+	}
+
+	c.JSON(http.StatusOK, song)
 }

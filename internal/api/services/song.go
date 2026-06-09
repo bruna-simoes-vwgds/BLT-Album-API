@@ -15,16 +15,12 @@ func NewSongService(repository *repositories.SongRepository) *SongService {
 	return &SongService{Repository: repository}
 }
 
-func (songService *SongService) GetSongById(c *gin.Context, id string) (models.Song, bool) {
+func (songService *SongService) GetSongById(c *gin.Context, id string) (*models.Song, error) {
 
 	song, err := songService.Repository.FindSongById(c, id)
 	if err != nil {
-		return models.Song{}, false
+		return &models.Song{}, err
 	}
 
-	if song == nil {
-		return models.Song{}, false
-	}
-
-	return *song, true
+	return song, err
 }

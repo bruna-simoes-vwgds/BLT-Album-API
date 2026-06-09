@@ -11,4 +11,6 @@ func LoadAlbumRoutes(router *gin.RouterGroup, handler handlers.AlbumHandler) {
 	{
 		album.GET("/id/:id", handler.GetAlbumById)
 	}
+
+	router.GET("/albums", handler.GetAlbums)
 }

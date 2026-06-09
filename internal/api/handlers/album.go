@@ -37,3 +37,14 @@ func (albumHandler *AlbumHandler) GetAlbumById(c *gin.Context) {
 
 	c.JSON(http.StatusOK, album)
 }
+
+func (albumHandler *AlbumHandler) GetAlbums(c *gin.Context) {
+	albums, errAlbums := albumHandler.Service.GetAlbums(c)
+
+	if errAlbums != nil {
+		c.JSON(http.StatusInternalServerError, models.Error{Message: errAlbums.Error(), Timestamp: time.Now().String()})
+		return
+	}
+
+	c.JSON(http.StatusOK, albums)
+}

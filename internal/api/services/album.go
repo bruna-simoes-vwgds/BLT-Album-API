@@ -23,3 +23,9 @@ func (albumService *AlbumService) GetAlbumById(c *gin.Context, id string) (*mode
 
 	return album, nil
 }
+
+func (albumService *AlbumService) GetAlbums(c *gin.Context) ([]models.Album, error) {
+	albums, err := albumService.Repository.FindAlbums(c)
+
+	return albums, err
+}

@@ -25,12 +25,13 @@ func (repo *AlbumRepository) FindAlbumById(c *gin.Context, id string) (*models.A
 	cursor, err := repo.collection.Find(c, bson.M{"album_id": id})
 
 	if err != nil {
-		logger.Error("Error finding album by id: ", err)
+		logger.Error("Error finding album by id in database: ", err)
 		return nil, err
 	}
 
 	var album []models.Album
-	if err := cursor.All(c, &album); err != nil {
+	if err = cursor.All(c, &album); err != nil {
+		logger.Error("Error iterating through album with id in database: ", err)
 		return nil, err
 	}
 
@@ -39,4 +40,22 @@ func (repo *AlbumRepository) FindAlbumById(c *gin.Context, id string) (*models.A
 	}
 
 	return &album[0], nil
+}
+
+func (repo *AlbumRepository) FindAlbums(c *gin.Context) ([]models.Album, error) {
+	cursor, err := repo.collection.Find(c, bson.M{})
+
+	if err != nil {
+		logger.Error("Error finding albums in database: ", err)
+		return nil, err
+	}
+
+	var albums []models.Album
+
+	if err = cursor.All(c, &albums); err != nil {
+		logger.Error("Error iterating albums in collection: ", err)
+		return nil, err
+	}
+
+	return albums, nil
 }
