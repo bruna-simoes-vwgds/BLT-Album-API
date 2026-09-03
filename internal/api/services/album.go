@@ -8,11 +8,15 @@ import (
 )
 
 type AlbumService struct {
-	Repository *repositories.AlbumRepository
+	Repository  *repositories.AlbumRepository
+	SongService *SongService
 }
 
-func NewAlbumService(repository *repositories.AlbumRepository) *AlbumService {
-	return &AlbumService{Repository: repository}
+func NewAlbumService(repository *repositories.AlbumRepository, songService *SongService) *AlbumService {
+	return &AlbumService{
+		Repository:  repository,
+		SongService: songService,
+	}
 }
 
 func (albumService *AlbumService) GetAlbumById(c *gin.Context, id string) (*models.Album, error) {
@@ -28,4 +32,28 @@ func (albumService *AlbumService) GetAlbums(c *gin.Context) ([]models.Album, err
 	albums, err := albumService.Repository.FindAlbums(c)
 
 	return albums, err
+}
+
+func (albumService *AlbumService) GetAllSongsByAlbumId(c *gin.Context, id string) ([]models.Song, error) {
+	album, err := albumService.Repository.FindAlbumById(c, id)
+
+	if err != nil {
+		return nil, err
+	}
+	if album == nil {
+		return []models.Song{}, nil
+	}
+
+	songs := make([]models.Song, 0, len(album.Songs))
+	for _, songID := range album.Songs {
+		song, err := albumService.SongService.GetSongById(c, songID)
+		if err != nil {
+			return nil, err
+		}
+		if song != nil {
+			songs = append(songs, *song)
+		}
+	}
+
+	return songs, nil
 }

@@ -17,7 +17,9 @@ type AlbumHandler struct {
 
 func NewAlbumHandler(db *database.DBHandler) *AlbumHandler {
 	albumRepository := repositories.NewAlbumRepository(db.MongoDb)
-	albumService := services.NewAlbumService(albumRepository)
+	songRepository := repositories.NewSongRepository(db.MongoDb)
+	songService := services.NewSongService(songRepository)
+	albumService := services.NewAlbumService(albumRepository, songService)
 	return &AlbumHandler{Service: albumService}
 }
 
@@ -47,4 +49,16 @@ func (albumHandler *AlbumHandler) GetAlbums(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, albums)
+}
+
+func (albumHandler *AlbumHandler) GetSongsByAlbumId(c *gin.Context) {
+	id := c.Param("id")
+	songs, errSongs := albumHandler.Service.GetAllSongsByAlbumId(c, id)
+
+	if errSongs != nil {
+		c.JSON(http.StatusInternalServerError, models.Error{Message: errSongs.Error(), Timestamp: time.Now().String()})
+		return
+	}
+
+	c.JSON(http.StatusOK, songs)
 }

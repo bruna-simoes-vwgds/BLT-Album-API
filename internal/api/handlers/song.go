@@ -37,3 +37,19 @@ func (songHandler *SongHandler) GetSongById(c *gin.Context) {
 
 	c.JSON(http.StatusOK, song)
 }
+
+func (songHandler *SongHandler) GetAllSongs(c *gin.Context) {
+	songs, err := songHandler.Service.GetAllSongs(c)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.Error{Message: "Error getting all songs: " + err.Error(), Timestamp: time.Now().String()})
+		return
+	}
+
+	if len(songs) == 0 {
+		c.JSON(http.StatusNoContent, models.Error{Message: "No songs found.", Timestamp: time.Now().String()})
+		return
+	}
+
+	c.JSON(http.StatusOK, songs)
+}

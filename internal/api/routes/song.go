@@ -7,8 +7,10 @@ import (
 )
 
 func LoadSongRoutes(router *gin.RouterGroup, handler handlers.SongHandler) {
-	album := router.Group("/song")
+	song := router.Group("/song")
 	{
-		album.GET("/id/:id", handler.GetSongById)
+		song.GET("/id/:id", handler.GetSongById)
 	}
+
+	router.GET("/songs", handler.GetAllSongs)
 }

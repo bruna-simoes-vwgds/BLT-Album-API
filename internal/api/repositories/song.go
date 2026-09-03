@@ -41,3 +41,20 @@ func (repo *SongRepository) FindSongById(c *gin.Context, id string) (*models.Son
 
 	return &song[0], nil
 }
+
+func (repo *SongRepository) GetAllSongs(c *gin.Context) ([]models.Song, error) {
+	cursor, err := repo.collection.Find(c, bson.M{})
+
+	if err != nil {
+		logger.Error("Error finding song by id in database: ", err)
+		return nil, err
+	}
+
+	var songs []models.Song
+	if err = cursor.All(c, &songs); err != nil {
+		logger.Error("Error iterating through song with id in database: ", err)
+		return nil, err
+	}
+
+	return songs, nil
+}
