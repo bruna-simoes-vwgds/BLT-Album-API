@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/joho/godotenv"
 
@@ -42,7 +41,7 @@ func SetContentType() gin.HandlerFunc {
 
 func NotFoundError() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		ctx.JSON(http.StatusNotFound, models.Error{Message: "Endpoint not found", Timestamp: time.Now().String()})
+		ctx.JSON(http.StatusNotFound, models.CreateResponseMessage("Endpoint not found"))
 	}
 }
 

@@ -6,7 +6,6 @@ import (
 	"album-app/internal/api/repositories"
 	"album-app/internal/api/services"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,12 +25,12 @@ func (songHandler *SongHandler) GetSongById(c *gin.Context) {
 	song, err := songHandler.Service.GetSongById(c, id)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.Error{Message: "Error getting song: " + err.Error(), Timestamp: time.Now().String()})
+		c.JSON(http.StatusInternalServerError, models.CreateResponseMessage("Error getting song: "))
 		return
 	}
 
 	if song == nil {
-		c.JSON(http.StatusNotFound, models.Error{Message: "Song not found", Timestamp: time.Now().String()})
+		c.JSON(http.StatusNotFound, models.CreateResponseMessage("Song not found"))
 		return
 	}
 
@@ -42,12 +41,12 @@ func (songHandler *SongHandler) GetAllSongs(c *gin.Context) {
 	songs, err := songHandler.Service.GetAllSongs(c)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.Error{Message: "Error getting all songs: " + err.Error(), Timestamp: time.Now().String()})
+		c.JSON(http.StatusInternalServerError, models.CreateResponseMessage("Error getting all songs: "+err.Error()))
 		return
 	}
 
 	if len(songs) == 0 {
-		c.JSON(http.StatusNoContent, models.Error{Message: "No songs found.", Timestamp: time.Now().String()})
+		c.JSON(http.StatusNoContent, models.CreateResponseMessage("No songs found."))
 		return
 	}
 

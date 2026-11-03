@@ -59,3 +59,13 @@ func (repo *AlbumRepository) FindAlbums(c *gin.Context) ([]models.Album, error) 
 
 	return albums, nil
 }
+
+func (repo *AlbumRepository) CreateAlbum(c *gin.Context, album models.Album) error {
+	_, err := repo.collection.InsertOne(c, album)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

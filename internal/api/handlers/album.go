@@ -6,7 +6,6 @@ import (
 	"album-app/internal/api/repositories"
 	"album-app/internal/api/services"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,12 +27,12 @@ func (albumHandler *AlbumHandler) GetAlbumById(c *gin.Context) {
 	album, errAlbum := albumHandler.Service.GetAlbumById(c, id)
 
 	if errAlbum != nil {
-		c.JSON(http.StatusInternalServerError, models.Error{Message: errAlbum.Error(), Timestamp: time.Now().String()})
+		c.JSON(http.StatusInternalServerError, models.CreateResponseMessage(errAlbum.Error()))
 		return
 	}
 
 	if album == nil {
-		c.JSON(http.StatusNotFound, models.Error{Message: "Album not found", Timestamp: time.Now().String()})
+		c.JSON(http.StatusNotFound, models.CreateResponseMessage("Album not found"))
 		return
 	}
 
@@ -44,7 +43,7 @@ func (albumHandler *AlbumHandler) GetAlbums(c *gin.Context) {
 	albums, errAlbums := albumHandler.Service.GetAlbums(c)
 
 	if errAlbums != nil {
-		c.JSON(http.StatusInternalServerError, models.Error{Message: errAlbums.Error(), Timestamp: time.Now().String()})
+		c.JSON(http.StatusInternalServerError, models.CreateResponseMessage(errAlbums.Error()))
 		return
 	}
 
@@ -56,9 +55,39 @@ func (albumHandler *AlbumHandler) GetSongsByAlbumId(c *gin.Context) {
 	songs, errSongs := albumHandler.Service.GetAllSongsByAlbumId(c, id)
 
 	if errSongs != nil {
-		c.JSON(http.StatusInternalServerError, models.Error{Message: errSongs.Error(), Timestamp: time.Now().String()})
+		c.JSON(http.StatusInternalServerError, models.CreateResponseMessage(errSongs.Error()))
 		return
 	}
 
 	c.JSON(http.StatusOK, songs)
+}
+
+func (albumHandler *AlbumHandler) AddAlbum(c *gin.Context) {
+	var album models.Album
+
+	err := c.ShouldBindJSON(&album)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.CreateResponseMessage("Request body malformed"))
+	}
+
+	duplicatedAlbum, errAlbum := albumHandler.Service.GetAlbumById(c, album.AlbumID)
+
+	if errAlbum != nil {
+		c.JSON(http.StatusInternalServerError, models.CreateResponseMessage("Error in database search: "+errAlbum.Error()))
+		return
+	}
+
+	if duplicatedAlbum != nil {
+		c.JSON(http.StatusConflict, models.CreateResponseMessage("An album entry already exists with that id"))
+		return
+	}
+
+	response, err := albumHandler.Service.CreateNewAlbum(c, album)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.CreateResponseMessage("Error occurred while creating the album: "+err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, response)
 }
