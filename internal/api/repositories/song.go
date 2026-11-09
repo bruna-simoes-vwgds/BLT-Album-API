@@ -58,3 +58,13 @@ func (repo *SongRepository) GetAllSongs(c *gin.Context) ([]models.Song, error) {
 
 	return songs, nil
 }
+
+func (repo *SongRepository) CreateSong(c *gin.Context, song models.Song) error {
+	_, err := repo.collection.InsertOne(c, song)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

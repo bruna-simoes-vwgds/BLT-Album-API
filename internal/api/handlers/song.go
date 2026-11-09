@@ -52,3 +52,34 @@ func (songHandler *SongHandler) GetAllSongs(c *gin.Context) {
 
 	c.JSON(http.StatusOK, songs)
 }
+
+func (songHandler *SongHandler) AddSong(c *gin.Context) {
+	var song models.Song
+
+	err := c.ShouldBindJSON(&song)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.CreateResponseMessage("Request body malformed"))
+		return
+	}
+
+	duplicatedSong, errSong := songHandler.Service.GetSongById(c, song.SongID)
+
+	if errSong != nil {
+		c.JSON(http.StatusInternalServerError, models.CreateResponseMessage("Error in database search: "+errSong.Error()))
+		return
+	}
+
+	if duplicatedSong != nil {
+		c.JSON(http.StatusConflict, models.CreateResponseMessage("A song entry already exists with that id"))
+		return
+	}
+
+	response, err := songHandler.Service.CreateNewSong(c, song)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.CreateResponseMessage("Error occurred while creating the song: "+err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, response)
+}

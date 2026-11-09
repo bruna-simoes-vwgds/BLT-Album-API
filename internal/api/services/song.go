@@ -33,3 +33,17 @@ func (songService *SongService) GetAllSongs(c *gin.Context) ([]models.Song, erro
 
 	return songs, nil
 }
+
+func (songService *SongService) CreateNewSong(c *gin.Context, song models.Song) (*models.DefaultResponse, error) {
+	var response models.DefaultResponse
+
+	err := songService.Repository.CreateSong(c, song)
+
+	if err == nil {
+		response = models.CreateResponseMessage("Album was created successfully")
+	} else {
+		response = models.CreateResponseMessage("Couldn't create album: " + err.Error())
+	}
+
+	return &response, err
+}

@@ -68,6 +68,7 @@ func (albumHandler *AlbumHandler) AddAlbum(c *gin.Context) {
 	err := c.ShouldBindJSON(&album)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.CreateResponseMessage("Request body malformed"))
+		return
 	}
 
 	duplicatedAlbum, errAlbum := albumHandler.Service.GetAlbumById(c, album.AlbumID)
