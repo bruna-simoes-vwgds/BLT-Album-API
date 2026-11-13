@@ -21,7 +21,7 @@ services:
       context: ./init
       dockerfile: Dockerfile
       args:
-        - MONGO_URI=${MONGO_URI}
+        - MONGO_URI=mongodb://mongodb:27017/public?directConnection=true
     depends_on:
       - mongodb
     networks:

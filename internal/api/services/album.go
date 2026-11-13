@@ -8,19 +8,19 @@ import (
 )
 
 type AlbumService struct {
-	Repository  *repositories.AlbumRepository
-	SongService *SongService
+	AlbumRepository *repositories.AlbumRepository
+	SongRepository  *repositories.SongRepository
 }
 
-func NewAlbumService(repository *repositories.AlbumRepository, songService *SongService) *AlbumService {
+func NewAlbumService(repository *repositories.AlbumRepository, songRepository *repositories.SongRepository) *AlbumService {
 	return &AlbumService{
-		Repository:  repository,
-		SongService: songService,
+		AlbumRepository: repository,
+		SongRepository:  songRepository,
 	}
 }
 
 func (albumService *AlbumService) GetAlbumById(c *gin.Context, id string) (*models.Album, error) {
-	album, err := albumService.Repository.FindAlbumById(c, id)
+	album, err := albumService.AlbumRepository.FindAlbumById(c, id)
 	if err != nil {
 		return &models.Album{}, err
 	}
@@ -29,17 +29,15 @@ func (albumService *AlbumService) GetAlbumById(c *gin.Context, id string) (*mode
 }
 
 func (albumService *AlbumService) GetAlbums(c *gin.Context) ([]models.Album, error) {
-	albums, err := albumService.Repository.FindAlbums(c)
+	albums, err := albumService.AlbumRepository.FindAlbums(c)
 
 	return albums, err
 }
 
-func (albumService *AlbumService) CreateNewAlbum(c *gin.Context, album models.Album) (*models.DefaultResponse, error) {
-	var response models.DefaultResponse
-
+func (albumService *AlbumService) CreateNewAlbum(c *gin.Context, album models.Album) ([]string, error) {
 	var songs []string
 	for _, songID := range album.Songs {
-		song, err := albumService.SongService.GetSongById(c, songID)
+		song, err := albumService.SongRepository.FindSongById(c, songID)
 		if err != nil {
 			return nil, err
 		}
@@ -48,34 +46,13 @@ func (albumService *AlbumService) CreateNewAlbum(c *gin.Context, album models.Al
 		}
 	}
 
-	var warning = ""
-	if len(songs) != 0 {
-		warning = "Some songs not found in the database were not added to the album: "
-		for i, song := range songs {
-			if i == len(songs)-1 {
-				warning += song
-			} else {
-				warning += " ,"
-			}
-		}
-	}
+	err := albumService.AlbumRepository.CreateAlbum(c, album)
 
-	err := albumService.Repository.CreateAlbum(c, album)
-
-	if err == nil {
-		response = models.CreateResponseMessage("Album was created successfully")
-	} else {
-		response = models.CreateResponseMessage("Couldn't create album: " + err.Error())
-	}
-
-	// append warning to response
-	response.Warning = warning
-
-	return &response, err
+	return songs, err
 }
 
 func (albumService *AlbumService) GetAllSongsByAlbumId(c *gin.Context, id string) ([]models.Song, error) {
-	album, err := albumService.Repository.FindAlbumById(c, id)
+	album, err := albumService.AlbumRepository.FindAlbumById(c, id)
 
 	if err != nil {
 		return nil, err
@@ -86,7 +63,7 @@ func (albumService *AlbumService) GetAllSongsByAlbumId(c *gin.Context, id string
 
 	songs := make([]models.Song, 0, len(album.Songs))
 	for _, songID := range album.Songs {
-		song, err := albumService.SongService.GetSongById(c, songID)
+		song, err := albumService.SongRepository.FindSongById(c, songID)
 		if err != nil {
 			return nil, err
 		}
@@ -96,4 +73,8 @@ func (albumService *AlbumService) GetAllSongsByAlbumId(c *gin.Context, id string
 	}
 
 	return songs, nil
+}
+
+func (albumService *AlbumService) DeleteAlbum(c *gin.Context, id string) (bool, error) {
+	return albumService.AlbumRepository.DeleteAlbumById(c, id)
 }

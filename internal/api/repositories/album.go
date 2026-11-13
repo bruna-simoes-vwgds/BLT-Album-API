@@ -69,3 +69,24 @@ func (repo *AlbumRepository) CreateAlbum(c *gin.Context, album models.Album) err
 
 	return nil
 }
+
+func (repo *AlbumRepository) DeleteAlbumById(c *gin.Context, id string) (bool, error) {
+	deleteResult, err := repo.collection.DeleteOne(c, bson.M{"id": id})
+
+	if err != nil {
+		return false, err
+	}
+
+	return deleteResult.DeletedCount > 0, nil
+}
+
+func (repo *AlbumRepository) DeleteSongByIdInAlbum(c *gin.Context, id string) (int64, error) {
+	filter := bson.M{"$pull": bson.M{"songs": bson.M{"$in": id}}}
+	updateResults, err := repo.collection.UpdateMany(c, bson.M{}, filter)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return updateResults.UpsertedCount, nil
+}

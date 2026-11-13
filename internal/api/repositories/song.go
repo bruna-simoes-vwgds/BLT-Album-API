@@ -68,3 +68,13 @@ func (repo *SongRepository) CreateSong(c *gin.Context, song models.Song) error {
 
 	return nil
 }
+
+func (repo *SongRepository) DeleteSongById(c *gin.Context, id string) (bool, error) {
+	deleteResult, err := repo.collection.DeleteOne(c, bson.M{"id": id})
+
+	if err != nil {
+		return false, err
+	}
+
+	return deleteResult.DeletedCount > 0, nil
+}

@@ -6,6 +6,7 @@ import (
 	"album-app/internal/api/repositories"
 	"album-app/internal/api/services"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,8 +16,9 @@ type SongHandler struct {
 }
 
 func NewSongHandler(db *database.DBHandler) *SongHandler {
+	albumRepository := repositories.NewAlbumRepository(db.MongoDb)
 	songRepository := repositories.NewSongRepository(db.MongoDb)
-	songService := services.NewSongService(songRepository)
+	songService := services.NewSongService(songRepository, albumRepository)
 	return &SongHandler{Service: songService}
 }
 
@@ -74,12 +76,31 @@ func (songHandler *SongHandler) AddSong(c *gin.Context) {
 		return
 	}
 
-	response, err := songHandler.Service.CreateNewSong(c, song)
+	err = songHandler.Service.CreateNewSong(c, song)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.CreateResponseMessage("Error occurred while creating the song: "+err.Error()))
 		return
 	}
 
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusCreated, models.CreateResponseMessage("Song was created successfully"))
+}
+
+func (songHandler *SongHandler) DeleteSongById(c *gin.Context) {
+	id := c.Param("id")
+
+	hasDeletedDocuments, removedFromAlbumsCount, err := songHandler.Service.DeleteSong(c, id)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.CreateResponseMessage("Couldn't delete song: "+err.Error()))
+		return
+	}
+
+	if !hasDeletedDocuments {
+		c.JSON(http.StatusNotFound, models.CreateResponseMessage("No songs found with id "+id))
+		return
+	}
+
+	c.JSON(http.StatusOK, models.CreateResponseMessage("Song was deleted successfully. Removed from "+
+		strconv.FormatInt(removedFromAlbumsCount, 10)+"albums."))
 }

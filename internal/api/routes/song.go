@@ -10,6 +10,7 @@ func LoadSongRoutes(router *gin.RouterGroup, handler handlers.SongHandler) {
 	song := router.Group("/song")
 	{
 		song.GET("/id/:id", handler.GetSongById)
+		song.DELETE("/id/:id", handler.DeleteSongById)
 		song.POST("", handler.AddSong)
 	}
 

@@ -11,6 +11,7 @@ func LoadAlbumRoutes(router *gin.RouterGroup, handler handlers.AlbumHandler) {
 	{
 		album.GET("/id/:id", handler.GetAlbumById)
 		album.GET("/id/:id/songs", handler.GetSongsByAlbumId)
+		album.DELETE("/id/:id", handler.DeleteAlbumById)
 		album.POST("", handler.AddAlbum)
 	}
 
